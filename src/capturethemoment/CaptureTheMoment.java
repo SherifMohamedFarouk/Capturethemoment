@@ -35,6 +35,7 @@ import javafx.scene.layout.StackPane;
 import javafx.scene.media.Media;
 import javafx.scene.media.MediaView;
 import javafx.stage.Stage;
+import javafx.util.Duration;
 
 public class CaptureTheMoment extends JFrame {
     
@@ -58,13 +59,13 @@ public class CaptureTheMoment extends JFrame {
         cat = new Catcher();
 
         setTitle("Camera Recorder");
-        setSize(700,700);
+//        setSize(250,250);
         setDefaultCloseOperation(EXIT_ON_CLOSE);
         text1 = new JLabel("  ");
         text2 = new JLabel(" ");
         canvas = new JPanel();
         Table table = new Table();
-        table.pad(40);
+//        table.pad(40);
         getContentPane().add(table);
         canvas.setBorder(BorderFactory.createEtchedBorder());
         table.addCell(canvas).width(CAPTUREWIDTH).height(CAPTUREHRIGHT);
@@ -88,6 +89,7 @@ public class CaptureTheMoment extends JFrame {
              
                 try {
                     catcher.stop();
+                    catcher.interrupt();
                     recorder.stop();
                     grabber.stop();
                     runnable = false;
@@ -111,19 +113,19 @@ public class CaptureTheMoment extends JFrame {
              
 );
              
-                                  new java.util.Timer().schedule( 
-        new java.util.TimerTask() {
-            @Override
-            public void run() {
-               GUI.doLaunch(args);
-         
+//                                  new java.util.Timer().schedule( 
+//        new java.util.TimerTask() {
+//            @Override
+//            public void run() {
+//                Algorithms.doLaunch(args);
+//         
+//             
+//
+//            }
+//        }, 
+//      9000
              
-
-            }
-        }, 
-      9000
-             
-);
+//);
    
        
     }
@@ -141,7 +143,7 @@ public class CaptureTheMoment extends JFrame {
                                 "output.mp4",
                                 CAPTUREWIDTH, CAPTUREHRIGHT, 2);
                         recorder.setInterleaved(true);
-                        // video options //
+                         // video options //
                         recorder.setVideoOption("tune", "zerolatency");
                         recorder.setVideoOption("preset", "ultrafast");
                         recorder.setVideoOption("crf", "28");
@@ -187,6 +189,15 @@ public class CaptureTheMoment extends JFrame {
                         Logger.getLogger(CaptureTheMoment.class.getName()).log(Level.SEVERE, null, ex);
                     } catch (Exception ex) {
                         Logger.getLogger(CaptureTheMoment.class.getName()).log(Level.SEVERE, null, ex);
+                    }
+                    finally{
+//                        try {
+//                            recorder.release();
+//                        } catch (Exception ex) {
+//                            Logger.getLogger(CaptureTheMoment.class.getName()).log(Level.SEVERE, null, ex);
+//                        }
+                         Algorithms.doLaunch(args);
+                        
                     }
 
                 //}//end of while
@@ -237,6 +248,8 @@ public class CaptureTheMoment extends JFrame {
         stage.setTitle("MediaPlayer");
         stage.show();
         player.play();
+        stage.hide();
+        player.setStopTime(Duration.millis(5000.0));
         player.setOnEndOfMedia(new Runnable() {
             @Override
             public void run() {

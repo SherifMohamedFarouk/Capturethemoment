@@ -21,6 +21,7 @@ import javafx.util.Duration;
 import java.io.File;
 import static javafx.application.Application.launch;
 
+
 public class VideoRecording extends javax.swing.JFrame {
 String args[] ;
   
@@ -54,7 +55,7 @@ String args[] ;
             }
         });
         jPanel1.add(jButton1);
-        jButton1.setBounds(350, 410, 200, 50);
+        jButton1.setBounds(350, 400, 200, 50);
 
         jButton2.setForeground(new java.awt.Color(255, 0, 0));
         jButton2.setText("Exit");
@@ -64,16 +65,16 @@ String args[] ;
             }
         });
         jPanel1.add(jButton2);
-        jButton2.setBounds(390, 470, 120, 25);
+        jButton2.setBounds(390, 460, 120, 25);
 
-        jButton3.setText("Watch last Vedio");
+        jButton3.setText("Watch last Video");
         jButton3.addActionListener(new java.awt.event.ActionListener() {
             public void actionPerformed(java.awt.event.ActionEvent evt) {
                 jButton3ActionPerformed(evt);
             }
         });
         jPanel1.add(jButton3);
-        jButton3.setBounds(370, 350, 150, 25);
+        jButton3.setBounds(370, 360, 150, 25);
 
         jLabel1.setIcon(new javax.swing.ImageIcon(getClass().getResource("/capturethemoment/Wallpapers-Camera-Gallery-78-Plus-PIC-WPW1012793.jpg.pagespeed.ce.dGTjytGD0t.jpg"))); // NOI18N
         jPanel1.add(jLabel1);
@@ -108,8 +109,9 @@ String args[] ;
 
     private void jButton3ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jButton3ActionPerformed
      String a[] = args ;
+     a = null;
    
-     GUI.doLaunch(a);
+     Algorithms.doLaunch(a);
                
            
     }//GEN-LAST:event_jButton3ActionPerformed
@@ -146,7 +148,6 @@ public static class GUI extends Application{
         Media media = new Media(f.toURI().toURL().toString());
         javafx.scene.media.MediaPlayer player = new   javafx.scene.media.MediaPlayer(media);
         MediaView viewer = new MediaView(player);
-
         //change width and height to fit video
         DoubleProperty width = viewer.fitWidthProperty();
         DoubleProperty height = viewer.fitHeightProperty();
@@ -163,13 +164,16 @@ public static class GUI extends Application{
         stage.setTitle("MediaPlayer");
         stage.show();
         player.play();
+     
         player.setOnEndOfMedia(new Runnable() {
             @Override
             public void run() {
-                player.stop();
-                stage.close();
+                player.pause();
+                stage.hide();
+                
             }
         });
+        
     }
 }
     

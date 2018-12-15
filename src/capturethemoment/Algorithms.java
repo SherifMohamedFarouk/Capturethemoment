@@ -1,67 +1,92 @@
-
 package capturethemoment;
-import java.awt.*;
-import java.awt.event.*;
-import java.io.*;
-import javax.swing.*;
-import javax.media.*;
-import javafx.application.Application;
-import javafx.beans.binding.Bindings;
-import javafx.beans.property.DoubleProperty;
-import javafx.scene.Scene;
-import javafx.scene.layout.StackPane;
-import javafx.scene.media.Media;
-import javafx.scene.media.MediaView;
-import javafx.scene.paint.Color;
-import javafx.stage.Stage;
-import javafx.util.Duration;
-import java.io.File;
-import static javafx.application.Application.launch;
+ import java.awt.BorderLayout;
+import java.awt.Canvas;
+import javax.swing.JFrame;
+import javax.swing.JPanel;
+import javax.swing.SwingUtilities;
+import com.sun.jna.Native;
+import com.sun.jna.NativeLibrary;
+import uk.co.caprica.vlcj.binding.LibVlc;
+import uk.co.caprica.vlcj.player.MediaPlayerFactory;
+import uk.co.caprica.vlcj.player.embedded.EmbeddedMediaPlayer;
+import uk.co.caprica.vlcj.player.embedded.windows.Win32FullScreenStrategy;
+import uk.co.caprica.vlcj.runtime.RuntimeUtil;
+import uk.co.caprica.vlcj.runtime.x.LibXUtil;
 
 
 
 
 
-public class Algorithms extends Application{
-  
-    private String Dir = System.getProperty("user.dir");
-    public static void main(String[] args) throws Exception{
-        launch(args);
-    }
 
-    @Override
-    public void start(Stage stage) throws Exception {
+public class Algorithms {
 
-        //goes to user Directory
-        File f = new File( "C:\\Users\\Veirn\\Documents\\NetBeansProjects\\CaptureTheMoment\\output.mp4");
+        public static void  doLaunch(final String[] args) {
+            SwingUtilities.invokeLater(new Runnable() {
+                @Override
+                public void run() {
+                     chargerLibrairie();
+                     new Algorithms(args);
+                }
+            });
+        }
 
-        //Converts media to string URL
-        Media media = new Media(f.toURI().toURL().toString());
-        javafx.scene.media.MediaPlayer player = new   javafx.scene.media.MediaPlayer(media);
-        MediaView viewer = new MediaView(player);
+       static void chargerLibrairie(){
+             NativeLibrary.addSearchPath(
+                    RuntimeUtil.getLibVlcLibraryName(), "C:/Program Files/VideoLAN/VLC");
+            Native.loadLibrary(RuntimeUtil.getLibVlcLibraryName(), LibVlc.class);
+            LibXUtil.initialise();
+        }
+       
+        private Algorithms(String[] args) {
+            JFrame frame = new JFrame("Tutoriel vlcj");
+            frame.setLocation(600,150);
+            frame.setSize(700, 700);
+            frame.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
+            frame.setVisible(true);
 
-        //change width and height to fit video
-        DoubleProperty width = viewer.fitWidthProperty();
-        DoubleProperty height = viewer.fitHeightProperty();
-        width.bind(Bindings.selectDouble(viewer.sceneProperty(), "width"));
-        height.bind(Bindings.selectDouble(viewer.sceneProperty(), "height"));
-        viewer.setPreserveRatio(true);
+            //Créer une instance de Canvas
+            Canvas c = new Canvas();
+            //L'arrière plan de la vidéo est noir par défaut
+            JPanel p = new JPanel();
+            p.setLayout(new BorderLayout());
+            //La vidéo prend toute la surface
+            p.add(c, BorderLayout.CENTER);
+            frame.add(p, BorderLayout.CENTER);
 
-        StackPane root = new StackPane();
-        root.getChildren().add(viewer);
-
-        //set the Scene
-        Scene scenes = new Scene(root, 500, 500, Color.BLACK);
-        stage.setScene(scenes);
-        stage.setTitle("test");
-        stage.show();
-        player.play();
-        player.setOnEndOfMedia(new Runnable() {
+            //Créer une instance factory
+            MediaPlayerFactory mediaPlayerFactory = new MediaPlayerFactory();
+            //Créer une instance lecteur média
+            EmbeddedMediaPlayer mediaPlayer = mediaPlayerFactory.newEmbeddedMediaPlayer(new     Win32FullScreenStrategy(frame));
+            mediaPlayer.setVideoSurface(mediaPlayerFactory.newVideoSurface(c));
+            //Plein écran
+            
+            //Cacher le curseur de la souris à l'intérieur de JFrame
+            mediaPlayer.setEnableMouseInputHandling(false);
+            //Désactiver le clavier à l'intérieur de JFrame
+            mediaPlayer.setEnableKeyInputHandling(true);
+           
+            //Préparer le fichier
+            mediaPlayer.prepareMedia("output.mp4");
+            //lire le fichier 
+            mediaPlayer.play();
+                                new java.util.Timer().schedule( 
+        new java.util.TimerTask() {
             @Override
             public void run() {
-                player.stop();
-                stage.close();
+               mediaPlayer.stop();
+              frame.setVisible(false);
+             
+
             }
-        });
+        }, 
+      6000
+             
+);
+   
+            
+        }
+
+    Algorithms() {
+        throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
     }
-}
+    }
