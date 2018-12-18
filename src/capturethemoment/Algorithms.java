@@ -6,6 +6,8 @@ import javax.swing.JPanel;
 import javax.swing.SwingUtilities;
 import com.sun.jna.Native;
 import com.sun.jna.NativeLibrary;
+import java.awt.Dimension;
+import java.awt.Toolkit;
 import uk.co.caprica.vlcj.binding.LibVlc;
 import uk.co.caprica.vlcj.player.MediaPlayerFactory;
 import uk.co.caprica.vlcj.player.embedded.EmbeddedMediaPlayer;
@@ -38,9 +40,9 @@ public class Algorithms {
         }
        
         private Algorithms(String[] args) {
-            JFrame frame = new JFrame("Tutoriel vlcj");
-            frame.setLocation(600,150);
+            JFrame frame = new JFrame("VLC");
             frame.setSize(700, 700);
+            frame.setLocationRelativeTo(null);
             frame.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
             frame.setVisible(true);
 
