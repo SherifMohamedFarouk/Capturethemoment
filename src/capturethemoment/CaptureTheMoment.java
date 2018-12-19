@@ -108,7 +108,12 @@ public class CaptureTheMoment extends JFrame {
                     setVisible(false);
                     
                     Algorithms.doLaunch(args);
-                    try {
+             new java.util.Timer().schedule( 
+        new java.util.TimerTask() {
+            @Override
+            public void run() {
+              
+             try {
 
 //                        fr = new FileReader("DataBase//" + "DataName" + ".txt");
                         LineNumberReader ln = new LineNumberReader(fr);
@@ -158,6 +163,10 @@ public class CaptureTheMoment extends JFrame {
                     } catch (IOException ex) {
                         Logger.getLogger(CaptureTheMoment.class.getName()).log(Level.SEVERE, null, ex);
                     }
+            }
+        }, 
+       5000 
+            );
                 } catch (Exception ex) {
                     Logger.getLogger(CaptureTheMoment.class.getName()).log(Level.SEVERE, null, ex);
                 } catch (FrameGrabber.Exception ex) {
@@ -166,7 +175,7 @@ public class CaptureTheMoment extends JFrame {
 
             }
         },
-                9000
+                7000
         );
 
 //                                  new java.util.Timer().schedule( 

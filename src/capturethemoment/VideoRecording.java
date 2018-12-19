@@ -226,11 +226,11 @@ public class VideoRecording extends javax.swing.JFrame {
         getContentPane().setLayout(layout);
         layout.setHorizontalGroup(
             layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-            .addComponent(jPanel1, javax.swing.GroupLayout.DEFAULT_SIZE, 798, Short.MAX_VALUE)
+            .addComponent(jPanel1, javax.swing.GroupLayout.DEFAULT_SIZE, 800, Short.MAX_VALUE)
         );
         layout.setVerticalGroup(
             layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-            .addComponent(jPanel1, javax.swing.GroupLayout.DEFAULT_SIZE, 549, Short.MAX_VALUE)
+            .addComponent(jPanel1, javax.swing.GroupLayout.DEFAULT_SIZE, 550, Short.MAX_VALUE)
         );
 
         pack();
@@ -319,7 +319,61 @@ public class VideoRecording extends javax.swing.JFrame {
     }//GEN-LAST:event_jButton4ActionPerformed
 
     private void jButton5ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jButton5ActionPerformed
+  JFileChooser chooser = new JFileChooser();
+    chooser.setCurrentDirectory(new java.io.File("."));
+    chooser.setDialogTitle("choosertitle");
+    chooser.setFileSelectionMode(JFileChooser.DIRECTORIES_ONLY);
+    chooser.setAcceptAllFileFilterUsed(false);
+ 
+    if (chooser.showOpenDialog(null) == JFileChooser.APPROVE_OPTION) {
+      System.out.println("getSelectedFile() : " + chooser.getSelectedFile().getName());
+      File file = new File(DN + "/" + fn);
+        try {
+            name = chooser.getSelectedFile().getName();
 
+            FileWriter fw = new FileWriter(file.getAbsoluteFile());
+            BufferedWriter bw = new BufferedWriter(fw);
+            bw.write(name);
+            bw.close();
+            jLabel4.setText(name);
+            File directory1 = new File("Videos");
+            if (!directory1.exists()) {
+                directory1.mkdir();
+                // If you require it to make the entire directory path including parents,
+                // use directory.mkdirs(); here instead.
+            }
+            File directory2 = new File("Videos//" + name);
+            if (!directory2.exists()) {
+                directory2.mkdir();
+                // If you require it to make the entire directory path including parents,
+                // use directory.mkdirs(); here instead.
+            } 
+
+        } catch (IOException e) {
+            e.printStackTrace();
+            System.exit(-1);
+        }
+
+        FileReader fr;
+        try {
+            fr = new FileReader(file);
+            LineNumberReader ln = new LineNumberReader(fr);
+            while (ln.getLineNumber() == 0) {
+                String s = ln.readLine();
+                name = s;
+                jLabel4.setText(name);
+                System.out.println(s);
+            }
+
+        } catch (FileNotFoundException ex) {
+            Logger.getLogger(VideoRecording.class.getName()).log(Level.SEVERE, null, ex);
+        } catch (IOException ex) {
+            Logger.getLogger(VideoRecording.class.getName()).log(Level.SEVERE, null, ex);
+        }
+
+    } else {
+      System.out.println("No Selection ");
+    }
     }//GEN-LAST:event_jButton5ActionPerformed
 
     private void jButton6ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jButton6ActionPerformed
