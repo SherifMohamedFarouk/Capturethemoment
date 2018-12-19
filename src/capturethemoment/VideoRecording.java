@@ -16,6 +16,8 @@ import javafx.scene.paint.Color;
 import javafx.stage.Stage;
 import javafx.util.Duration;
 import java.io.File;
+import java.time.LocalDateTime;
+import java.time.format.DateTimeFormatter;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 import static javafx.application.Application.launch;
@@ -265,6 +267,8 @@ public class VideoRecording extends javax.swing.JFrame {
 
     private void jButton4ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jButton4ActionPerformed
         FileReader fr;
+         DateTimeFormatter dtf = DateTimeFormatter.ofPattern("yyyy");  
+   LocalDateTime now = LocalDateTime.now();  
         try {
             fr = new FileReader("DataBase//" + "DataName" + ".txt");
             LineNumberReader ln = new LineNumberReader(fr);
@@ -290,13 +294,14 @@ public class VideoRecording extends javax.swing.JFrame {
                         // use directory.mkdirs(); here instead.
                     }
                     if (writeFile.getLatestFilefromDir("Videos//" + s) == null) {
-                        writeFile.copyfile("output.mp4", "2018", "Videos//" + s);
+                        writeFile.copyfile("output.mp4", dtf.format(now), "Videos//" + s);
                     } else {
                         int f = Integer.parseInt(writeFile.getLatestFilefromDir("Videos//" + s));
                         f = f + 1;
                         String ve = String.format("%d", f);
                         writeFile.copyfile("output.mp4", ve, "Videos//" + s);
-
+                   String multiLineMsg[] = {"File has been saved", "please go and check"};
+                        JOptionPane.showMessageDialog(frame, multiLineMsg);
                     }
 
                     System.out.println(writeFile.getLatestFilefromDir("Videos//" + s));
@@ -312,15 +317,14 @@ public class VideoRecording extends javax.swing.JFrame {
             Logger.getLogger(VideoRecording.class.getName()).log(Level.SEVERE, null, ex);
         }
 
-        String multiLineMsg[] = {"File has been saved", "please go and check"};
-        JOptionPane.showMessageDialog(frame, multiLineMsg);
+    
 
 
     }//GEN-LAST:event_jButton4ActionPerformed
 
     private void jButton5ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jButton5ActionPerformed
   JFileChooser chooser = new JFileChooser();
-    chooser.setCurrentDirectory(new java.io.File("."));
+    chooser.setCurrentDirectory(new java.io.File("Videos"));
     chooser.setDialogTitle("choosertitle");
     chooser.setFileSelectionMode(JFileChooser.DIRECTORIES_ONLY);
     chooser.setAcceptAllFileFilterUsed(false);

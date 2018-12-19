@@ -31,6 +31,8 @@ import org.bytedeco.javacv.OpenCVFrameConverter;
 import org.bytedeco.javacv.OpenCVFrameGrabber;
 
 import static java.lang.Thread.sleep;
+import java.time.LocalDateTime;
+import java.time.format.DateTimeFormatter;
 import javafx.application.Application;
 import static javafx.application.Application.launch;
 import javafx.beans.binding.Bindings;
@@ -112,8 +114,11 @@ public class CaptureTheMoment extends JFrame {
         new java.util.TimerTask() {
             @Override
             public void run() {
-              
+            
              try {
+                       DateTimeFormatter dtf = DateTimeFormatter.ofPattern("yyyy");  
+   LocalDateTime now = LocalDateTime.now();  
+   System.out.println(dtf.format(now));
 
 //                        fr = new FileReader("DataBase//" + "DataName" + ".txt");
                         LineNumberReader ln = new LineNumberReader(fr);
@@ -139,13 +144,14 @@ public class CaptureTheMoment extends JFrame {
                                     // use directory.mkdirs(); here instead.
                                 }
                                 if (writeFile.getLatestFilefromDir("Videos//" + s) == null) {
-                                    writeFile.copyfile("output.mp4", "2018", "Videos//" + s);
+                                    writeFile.copyfile("output.mp4", dtf.format(now), "Videos//" + s);
                                 } else {
                                     int f = Integer.parseInt(writeFile.getLatestFilefromDir("Videos//" + s));
                                     f = f + 1;
                                     String ve = String.format("%d", f);
                                     writeFile.copyfile("output.mp4", ve, "Videos//" + s);
-
+                         String multiLineMsg[] = {"File has been saved", "please go and check"};
+                        JOptionPane.showMessageDialog(frame, multiLineMsg);
                                 }
 
                                 System.out.println(writeFile.getLatestFilefromDir("Videos//" + s));
@@ -154,9 +160,6 @@ public class CaptureTheMoment extends JFrame {
                             }
                             System.out.println(s);
                         }
-
-                        String multiLineMsg[] = {"File has been saved", "please go and check"};
-                        JOptionPane.showMessageDialog(frame, multiLineMsg);
                     } //}//end of while
                     catch (FileNotFoundException ex) {
                         Logger.getLogger(CaptureTheMoment.class.getName()).log(Level.SEVERE, null, ex);
@@ -175,7 +178,7 @@ public class CaptureTheMoment extends JFrame {
 
             }
         },
-                7000
+                7500
         );
 
 //                                  new java.util.Timer().schedule( 
@@ -206,6 +209,7 @@ public class CaptureTheMoment extends JFrame {
                             "output.mp4",
                             CAPTUREWIDTH, CAPTUREHRIGHT, 2);
                     recorder.setInterleaved(true);
+ 
                     // video options //
                     recorder.setVideoOption("tune", "zerolatency");
                     recorder.setVideoOption("preset", "ultrafast");
@@ -215,13 +219,16 @@ public class CaptureTheMoment extends JFrame {
                     recorder.setFormat("mp4");
                     recorder.setFrameRate(FRAME_RATE);
                     recorder.setGopSize(GOP_LENGTH_IN_FRAMES);
-                    // audio options //
-                    recorder.setAudioOption("crf", "0");
+//                    // audio options //
+                    recorder.setAudioOption("tune", "zerolatency");
+                    recorder.setAudioOption("preset", "ultrafast");
+                    recorder.setAudioOption("crf", "28");
                     recorder.setAudioQuality(0);
-                    recorder.setAudioBitrate(192000);
+                    recorder.setAudioBitrate(2000000);
                     recorder.setSampleRate(44100);
-                    recorder.setAudioChannels(2);
+                    recorder.setAudioChannels(1);
                     recorder.setAudioCodec(avcodec.AV_CODEC_ID_AAC);
+                    
 
                     recorder.start();
 
