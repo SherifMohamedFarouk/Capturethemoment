@@ -1,7 +1,16 @@
 package capturethemoment;
 
+import com.teamdev.jxcapture.EncodingParameters;
+import com.teamdev.jxcapture.ImageCapture;
+import com.teamdev.jxcapture.VideoCapture;
+import com.teamdev.jxcapture.audio.AudioCodec;
+import com.teamdev.jxcapture.audio.AudioEncodingParameters;
+import com.teamdev.jxcapture.audio.AudioSource;
+import com.teamdev.jxcapture.video.VideoFormat;
+import com.teamdev.jxcapture.video.VideoSource;
 import java.awt.*;
 import java.awt.event.*;
+import java.awt.image.BufferedImage;
 import java.io.*;
 import javax.swing.*;
 import javax.media.*;
@@ -240,14 +249,203 @@ public class VideoRecording extends javax.swing.JFrame {
     }// </editor-fold>//GEN-END:initComponents
 
     private void jButton1ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jButton1ActionPerformed
-        FileReader fr;
-        try {
-            fr = new FileReader("DataBase//" + "DataName" + ".txt");
-            CaptureTheMoment l = new CaptureTheMoment(fr);
-            l.setVisible(true);
-        } catch (Exception ex) {
-            ex.printStackTrace();
+        VideoCapture videoCapture = VideoCapture.create(VideoFormat.WMV);
+
+        java.util.List<VideoSource> availableVideoSources = VideoSource.getAvailable();
+        System.out.println("availableVideoSources = " + availableVideoSources);
+
+        if (availableVideoSources.isEmpty()) {
+            throw new IllegalStateException("No external video sources available");
         }
+
+        VideoSource webCamera = availableVideoSources.get(0);
+        System.out.println("webCamera = " + webCamera);
+
+        videoCapture.setVideoSource(webCamera);
+
+        java.util.List<com.teamdev.jxcapture.Codec> videoCodecs = videoCapture.getVideoCodecs();
+        com.teamdev.jxcapture.Codec videoCodec = videoCodecs.get(0);
+        System.out.println("videoCodec = " + videoCodec);
+
+        EncodingParameters encodingParameters = new EncodingParameters(new File("output.mp4"));
+        encodingParameters.setBitrate(500000);
+        encodingParameters.setFramerate(10);
+        encodingParameters.setKeyFrameInterval(1);
+        encodingParameters.setCodec(videoCodec);
+
+        System.out.println("Available audio recording sources:");
+        java.util.List<AudioSource> audioSources = AudioSource.getAvailable();
+        for (AudioSource audioSource : audioSources) {
+            System.out.println("audioSource = " + audioSource);
+        }
+        if (audioSources.isEmpty()) {
+            System.err.println("No audio sources available");
+        } else {
+            AudioSource audioSource = audioSources.get(0);
+            System.out.println("Selected audio source = " + audioSource);
+            videoCapture.setAudioSource(audioSource);
+
+            java.util.List<AudioCodec> audioCodecs = videoCapture.getAudioCodecs();
+            if (audioSources.isEmpty()) {
+                System.err.println("No audio codecs available");
+            } else {
+                System.out.println("Available audio codecs:");
+                for (AudioCodec audioCodec : audioCodecs) {
+                    System.out.println("audioCodec = " + audioCodec);
+                }
+
+                // Enable and configure audio encoding
+                AudioEncodingParameters audioEncoding = new AudioEncodingParameters();
+
+                AudioCodec audioCodec = audioCodecs.get(0);
+                System.out.println("Selected audio codec = " + audioCodec);
+                audioEncoding.setCodec(audioCodec);
+
+                encodingParameters.setAudioEncoding(audioEncoding);
+            }
+        }
+        System.out.println("encodingParameters = " + encodingParameters);
+        ImageCapture webCameraImageCapture = ImageCapture.create();
+        webCameraImageCapture.setImageSource(webCamera);
+        WebCameraView webCameraView = new WebCameraView(webCameraImageCapture);
+        webCameraView.show();
+        videoCapture.start(encodingParameters);
+
+        new java.util.Timer().schedule(
+                new java.util.TimerTask() {
+            @Override
+            public void run() {
+                videoCapture.stop();
+                webCameraView.hide();
+                Algorithms.doLaunch(args);
+                new java.util.Timer().schedule(
+                        new java.util.TimerTask() {
+                    @Override
+                    public void run() {
+
+                        try {
+                            DateTimeFormatter dtf = DateTimeFormatter.ofPattern("yyyy");
+                            LocalDateTime now = LocalDateTime.now();
+                            System.out.println(dtf.format(now));
+                            FileReader fr;
+
+                            fr = new FileReader("DataBase//" + "DataName" + ".txt");
+                            LineNumberReader ln = new LineNumberReader(fr);
+                            while (ln.getLineNumber() == 0) {
+                                String s = ln.readLine();
+                                JDialog.setDefaultLookAndFeelDecorated(true);
+                                int response = JOptionPane.showConfirmDialog(null, "Do you want to save the video ?", "Save",
+                                        JOptionPane.YES_NO_OPTION, JOptionPane.QUESTION_MESSAGE);
+                                if (response == JOptionPane.NO_OPTION) {
+
+                                } else if (response == JOptionPane.YES_OPTION) {
+                                    JDialog.setDefaultLookAndFeelDecorated(true);
+                                    int response1 = JOptionPane.showConfirmDialog(null, "would you like to enter a new event ?", "Save",
+                                            JOptionPane.YES_NO_OPTION, JOptionPane.QUESTION_MESSAGE);
+                                    if (response1 == JOptionPane.NO_OPTION) {
+                                        JFileChooser chooser = new JFileChooser();
+                                        chooser.setCurrentDirectory(new java.io.File("Videos//" + s));
+                                        chooser.setDialogTitle("choosertitle");
+                                        chooser.setFileSelectionMode(JFileChooser.DIRECTORIES_ONLY);
+                                        chooser.setAcceptAllFileFilterUsed(false);
+
+                                        if (chooser.showOpenDialog(null) == JFileChooser.APPROVE_OPTION) {
+                                            System.out.println("getSelectedFile() : " + chooser.getSelectedFile().getName());
+                                            String n = chooser.getSelectedFile().getName();
+                                            File directory = new File("Videos");
+                                            if (!directory.exists()) {
+                                                directory.mkdir();
+                                                // If you require it to make the entire directory path including parents,
+                                                // use directory.mkdirs(); here instead.
+                                            }
+                                            File directory2 = new File("Videos//" + s);
+                                            if (!directory2.exists()) {
+                                                directory2.mkdir();
+                                                // If you require it to make the entire directory path including parents,
+                                                // use directory.mkdirs(); here instead.
+                                            }
+                                            File directory3 = new File("Videos//" + s + "//" + n);
+                                            if (!directory3.exists()) {
+                                                directory3.mkdir();
+                                                // If you require it to make the entire directory path including parents,
+                                                // use directory.mkdirs(); here instead.
+                                            }
+                                            if (writeFile.getLatestFilefromDir("Videos//" + s + "//" + n) == null) {
+                                                writeFile.copyfile("output.mp4", dtf.format(now), "Videos//" + s + "//" + n);
+                                            } else {
+                                                int f = Integer.parseInt(writeFile.getLatestFilefromDir("Videos//" + s + "//" + n));
+                                                f = f + 1;
+                                                String ve = String.format("%d", f);
+                                                writeFile.copyfile("output.mp4", ve, "Videos//" + s + "//" + n);
+                                                String multiLineMsg[] = {"File has been saved", "please go and check"};
+                                                JOptionPane.showMessageDialog(frame, multiLineMsg);
+                                            }
+
+                                            System.out.println(writeFile.getLatestFilefromDir("Videos//" + s + "//" + n));
+                                        } else {
+                                            System.out.println("No Selection ");
+                                        }
+
+                                    } else if (response1 == JOptionPane.YES_OPTION) {
+                                        Object result = JOptionPane.showInputDialog(frame, "Enter the Event :");
+                                        String n = result.toString();
+
+                                        File directory = new File("Videos");
+                                        if (!directory.exists()) {
+                                            directory.mkdir();
+                                            // If you require it to make the entire directory path including parents,
+                                            // use directory.mkdirs(); here instead.
+                                        }
+                                        File directory2 = new File("Videos//" + s);
+                                        if (!directory2.exists()) {
+                                            directory2.mkdir();
+                                            // If you require it to make the entire directory path including parents,
+                                            // use directory.mkdirs(); here instead.
+                                        }
+                                        File directory3 = new File("Videos//" + s + "//" + n);
+                                        if (!directory3.exists()) {
+                                            directory3.mkdir();
+                                            // If you require it to make the entire directory path including parents,
+                                            // use directory.mkdirs(); here instead.
+                                        }
+                                        if (writeFile.getLatestFilefromDir("Videos//" + s + "//" + n) == null) {
+                                            writeFile.copyfile("output.mp4", dtf.format(now), "Videos//" + s + "//" + n);
+                                        } else {
+                                            int f = Integer.parseInt(writeFile.getLatestFilefromDir("Videos//" + s + "//" + n));
+                                            f = f + 1;
+                                            String ve = String.format("%d", f);
+                                            writeFile.copyfile("output.mp4", ve, "Videos//" + s + "//" + n);
+                                            String multiLineMsg[] = {"File has been saved", "please go and check"};
+                                            JOptionPane.showMessageDialog(frame, multiLineMsg);
+                                        }
+
+                                        System.out.println(writeFile.getLatestFilefromDir("Videos//" + s + "//" + n));
+
+                                    } else if (response1 == JOptionPane.CLOSED_OPTION) {
+                                        System.out.println("JOptionPane closed");
+                                    }
+                                    System.out.println(s);
+
+                                } else if (response == JOptionPane.CLOSED_OPTION) {
+                                    System.out.println("JOptionPane closed");
+                                }
+                                System.out.println(s);
+                            }
+                        } //}//end of while
+                        catch (FileNotFoundException ex) {
+                            Logger.getLogger(VideoRecording.class.getName()).log(Level.SEVERE, null, ex);
+                        } catch (IOException ex) {
+                            Logger.getLogger(VideoRecording.class.getName()).log(Level.SEVERE, null, ex);
+                        }
+                    }
+                },
+                        5000
+                );
+
+            }
+        },
+                5000
+        );
 
 
     }//GEN-LAST:event_jButton1ActionPerformed
@@ -267,8 +465,8 @@ public class VideoRecording extends javax.swing.JFrame {
 
     private void jButton4ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jButton4ActionPerformed
         FileReader fr;
-         DateTimeFormatter dtf = DateTimeFormatter.ofPattern("yyyy");  
-   LocalDateTime now = LocalDateTime.now();  
+        DateTimeFormatter dtf = DateTimeFormatter.ofPattern("yyyy");
+        LocalDateTime now = LocalDateTime.now();
         try {
             fr = new FileReader("DataBase//" + "DataName" + ".txt");
             LineNumberReader ln = new LineNumberReader(fr);
@@ -280,31 +478,93 @@ public class VideoRecording extends javax.swing.JFrame {
                 if (response == JOptionPane.NO_OPTION) {
                     System.out.println("No button clicked");
                 } else if (response == JOptionPane.YES_OPTION) {
+                    JDialog.setDefaultLookAndFeelDecorated(true);
+                    int response1 = JOptionPane.showConfirmDialog(null, "would you like to enter a new event ?", "Save",
+                            JOptionPane.YES_NO_OPTION, JOptionPane.QUESTION_MESSAGE);
+                    if (response1 == JOptionPane.NO_OPTION) {
+                        JFileChooser chooser = new JFileChooser();
+                        chooser.setCurrentDirectory(new java.io.File("Videos//" + s));
+                        chooser.setDialogTitle("choosertitle");
+                        chooser.setFileSelectionMode(JFileChooser.DIRECTORIES_ONLY);
+                        chooser.setAcceptAllFileFilterUsed(false);
 
-                    File directory = new File("Videos");
-                    if (!directory.exists()) {
-                        directory.mkdir();
-                        // If you require it to make the entire directory path including parents,
-                        // use directory.mkdirs(); here instead.
-                    }
-                    File directory2 = new File("Videos//" + s);
-                    if (!directory2.exists()) {
-                        directory2.mkdir();
-                        // If you require it to make the entire directory path including parents,
-                        // use directory.mkdirs(); here instead.
-                    }
-                    if (writeFile.getLatestFilefromDir("Videos//" + s) == null) {
-                        writeFile.copyfile("output.mp4", dtf.format(now), "Videos//" + s);
-                    } else {
-                        int f = Integer.parseInt(writeFile.getLatestFilefromDir("Videos//" + s));
-                        f = f + 1;
-                        String ve = String.format("%d", f);
-                        writeFile.copyfile("output.mp4", ve, "Videos//" + s);
-                   String multiLineMsg[] = {"File has been saved", "please go and check"};
-                        JOptionPane.showMessageDialog(frame, multiLineMsg);
-                    }
+                        if (chooser.showOpenDialog(null) == JFileChooser.APPROVE_OPTION) {
+                            System.out.println("getSelectedFile() : " + chooser.getSelectedFile().getName());
+                            String n = chooser.getSelectedFile().getName();
+                            File directory = new File("Videos");
+                            if (!directory.exists()) {
+                                directory.mkdir();
+                                // If you require it to make the entire directory path including parents,
+                                // use directory.mkdirs(); here instead.
+                            }
+                            File directory2 = new File("Videos//" + s);
+                            if (!directory2.exists()) {
+                                directory2.mkdir();
+                                // If you require it to make the entire directory path including parents,
+                                // use directory.mkdirs(); here instead.
+                            }
+                            File directory3 = new File("Videos//" + s + "//" + n);
+                            if (!directory3.exists()) {
+                                directory3.mkdir();
+                                // If you require it to make the entire directory path including parents,
+                                // use directory.mkdirs(); here instead.
+                            }
+                            if (writeFile.getLatestFilefromDir("Videos//" + s + "//" + n) == null) {
+                                writeFile.copyfile("output.mp4", dtf.format(now), "Videos//" + s + "//" + n);
+                            } else {
+                                int f = Integer.parseInt(writeFile.getLatestFilefromDir("Videos//" + s + "//" + n));
+                                f = f + 1;
+                                String ve = String.format("%d", f);
+                                writeFile.copyfile("output.mp4", ve, "Videos//" + s + "//" + n);
+                                String multiLineMsg[] = {"File has been saved", "please go and check"};
+                                JOptionPane.showMessageDialog(frame, multiLineMsg);
+                            }
 
-                    System.out.println(writeFile.getLatestFilefromDir("Videos//" + s));
+                            System.out.println(writeFile.getLatestFilefromDir("Videos//" + s + "//" + n));
+                        } else {
+                            System.out.println("No Selection ");
+                        }
+
+                    } else if (response1 == JOptionPane.YES_OPTION) {
+                        Object result = JOptionPane.showInputDialog(frame, "Enter the Event :");
+                        String n = result.toString();
+
+                        File directory = new File("Videos");
+                        if (!directory.exists()) {
+                            directory.mkdir();
+                            // If you require it to make the entire directory path including parents,
+                            // use directory.mkdirs(); here instead.
+                        }
+                        File directory2 = new File("Videos//" + s);
+                        if (!directory2.exists()) {
+                            directory2.mkdir();
+                            // If you require it to make the entire directory path including parents,
+                            // use directory.mkdirs(); here instead.
+                        }
+                        File directory3 = new File("Videos//" + s + "//" + n);
+                        if (!directory3.exists()) {
+                            directory3.mkdir();
+                            // If you require it to make the entire directory path including parents,
+                            // use directory.mkdirs(); here instead.
+                        }
+                        if (writeFile.getLatestFilefromDir("Videos//" + s + "//" + n) == null) {
+                            writeFile.copyfile("output.mp4", dtf.format(now), "Videos//" + s + "//" + n);
+                        } else {
+                            int f = Integer.parseInt(writeFile.getLatestFilefromDir("Videos//" + s + "//" + n));
+                            f = f + 1;
+                            String ve = String.format("%d", f);
+                            writeFile.copyfile("output.mp4", ve, "Videos//" + s + "//" + n);
+                            String multiLineMsg[] = {"File has been saved", "please go and check"};
+                            JOptionPane.showMessageDialog(frame, multiLineMsg);
+                        }
+
+                        System.out.println(writeFile.getLatestFilefromDir("Videos//" + s + "//" + n));
+
+                    } else if (response1 == JOptionPane.CLOSED_OPTION) {
+                        System.out.println("JOptionPane closed");
+                    }
+                    System.out.println(s);
+
                 } else if (response == JOptionPane.CLOSED_OPTION) {
                     System.out.println("JOptionPane closed");
                 }
@@ -317,67 +577,65 @@ public class VideoRecording extends javax.swing.JFrame {
             Logger.getLogger(VideoRecording.class.getName()).log(Level.SEVERE, null, ex);
         }
 
-    
-
 
     }//GEN-LAST:event_jButton4ActionPerformed
 
     private void jButton5ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jButton5ActionPerformed
-  JFileChooser chooser = new JFileChooser();
-    chooser.setCurrentDirectory(new java.io.File("Videos"));
-    chooser.setDialogTitle("choosertitle");
-    chooser.setFileSelectionMode(JFileChooser.DIRECTORIES_ONLY);
-    chooser.setAcceptAllFileFilterUsed(false);
- 
-    if (chooser.showOpenDialog(null) == JFileChooser.APPROVE_OPTION) {
-      System.out.println("getSelectedFile() : " + chooser.getSelectedFile().getName());
-      File file = new File(DN + "/" + fn);
-        try {
-            name = chooser.getSelectedFile().getName();
+        JFileChooser chooser = new JFileChooser();
+        chooser.setCurrentDirectory(new java.io.File("Videos"));
+        chooser.setDialogTitle("choosertitle");
+        chooser.setFileSelectionMode(JFileChooser.DIRECTORIES_ONLY);
+        chooser.setAcceptAllFileFilterUsed(false);
 
-            FileWriter fw = new FileWriter(file.getAbsoluteFile());
-            BufferedWriter bw = new BufferedWriter(fw);
-            bw.write(name);
-            bw.close();
-            jLabel4.setText(name);
-            File directory1 = new File("Videos");
-            if (!directory1.exists()) {
-                directory1.mkdir();
-                // If you require it to make the entire directory path including parents,
-                // use directory.mkdirs(); here instead.
-            }
-            File directory2 = new File("Videos//" + name);
-            if (!directory2.exists()) {
-                directory2.mkdir();
-                // If you require it to make the entire directory path including parents,
-                // use directory.mkdirs(); here instead.
-            } 
+        if (chooser.showOpenDialog(null) == JFileChooser.APPROVE_OPTION) {
+            System.out.println("getSelectedFile() : " + chooser.getSelectedFile().getName());
+            File file = new File(DN + "/" + fn);
+            try {
+                name = chooser.getSelectedFile().getName();
 
-        } catch (IOException e) {
-            e.printStackTrace();
-            System.exit(-1);
-        }
-
-        FileReader fr;
-        try {
-            fr = new FileReader(file);
-            LineNumberReader ln = new LineNumberReader(fr);
-            while (ln.getLineNumber() == 0) {
-                String s = ln.readLine();
-                name = s;
+                FileWriter fw = new FileWriter(file.getAbsoluteFile());
+                BufferedWriter bw = new BufferedWriter(fw);
+                bw.write(name);
+                bw.close();
                 jLabel4.setText(name);
-                System.out.println(s);
+                File directory1 = new File("Videos");
+                if (!directory1.exists()) {
+                    directory1.mkdir();
+                    // If you require it to make the entire directory path including parents,
+                    // use directory.mkdirs(); here instead.
+                }
+                File directory2 = new File("Videos//" + name);
+                if (!directory2.exists()) {
+                    directory2.mkdir();
+                    // If you require it to make the entire directory path including parents,
+                    // use directory.mkdirs(); here instead.
+                }
+
+            } catch (IOException e) {
+                e.printStackTrace();
+                System.exit(-1);
             }
 
-        } catch (FileNotFoundException ex) {
-            Logger.getLogger(VideoRecording.class.getName()).log(Level.SEVERE, null, ex);
-        } catch (IOException ex) {
-            Logger.getLogger(VideoRecording.class.getName()).log(Level.SEVERE, null, ex);
-        }
+            FileReader fr;
+            try {
+                fr = new FileReader(file);
+                LineNumberReader ln = new LineNumberReader(fr);
+                while (ln.getLineNumber() == 0) {
+                    String s = ln.readLine();
+                    name = s;
+                    jLabel4.setText(name);
+                    System.out.println(s);
+                }
 
-    } else {
-      System.out.println("No Selection ");
-    }
+            } catch (FileNotFoundException ex) {
+                Logger.getLogger(VideoRecording.class.getName()).log(Level.SEVERE, null, ex);
+            } catch (IOException ex) {
+                Logger.getLogger(VideoRecording.class.getName()).log(Level.SEVERE, null, ex);
+            }
+
+        } else {
+            System.out.println("No Selection ");
+        }
     }//GEN-LAST:event_jButton5ActionPerformed
 
     private void jButton6ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jButton6ActionPerformed
@@ -505,6 +763,52 @@ public class VideoRecording extends javax.swing.JFrame {
                 Logger.getLogger(VideoRecording.class.getName()).log(Level.SEVERE, null, ex);
             }
 
+        }
+    }
+
+    private static class WebCameraView {
+
+        private static final Dimension VIEW_DIMENSIONS = new Dimension(700, 700);
+        private static final Point VIEW_LOCATION = new Point(550, 120);
+        private static final int UPDATE_INTERVAL = 100;
+
+        private JWindow webCameraView;
+        private BufferedImage snapshot;
+        private Timer updateTimer;
+
+        public WebCameraView(final ImageCapture webCameraCapture) {
+            webCameraView = new JWindow() {
+                @Override
+                public void paint(Graphics g) {
+                    if (snapshot != null) {
+                        g.drawImage(snapshot, 0, 0, VIEW_DIMENSIONS.width, VIEW_DIMENSIONS.height, null);
+                    }
+                }
+            };
+            updateTimer = new Timer(UPDATE_INTERVAL, new ActionListener() {
+                public void actionPerformed(ActionEvent e) {
+                    webCameraCapture.takeSnapshot();
+                    if (snapshot != null) {
+                        snapshot.flush();
+                    }
+                    snapshot = webCameraCapture.getImage();
+                    webCameraView.repaint();
+                }
+            });
+        }
+
+        public void show() {
+
+            webCameraView.setLocation(VIEW_LOCATION);
+            webCameraView.setSize(VIEW_DIMENSIONS);
+            webCameraView.setAlwaysOnTop(true);
+            webCameraView.setVisible(true);
+            updateTimer.start();
+        }
+
+        public void hide() {
+            updateTimer.stop();
+            webCameraView.dispose();
         }
     }
 

@@ -34,7 +34,7 @@ public class Algorithms {
 
        static void chargerLibrairie(){
              NativeLibrary.addSearchPath(
-                    RuntimeUtil.getLibVlcLibraryName(), "C:/Program Files/VideoLAN/VLC");
+                    RuntimeUtil.getLibVlcLibraryName(), "C:\\Program Files\\VideoLAN\\VLC");
             Native.loadLibrary(RuntimeUtil.getLibVlcLibraryName(), LibVlc.class);
             LibXUtil.initialise();
         }
