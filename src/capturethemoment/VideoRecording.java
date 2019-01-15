@@ -98,6 +98,11 @@ public class VideoRecording extends javax.swing.JFrame {
             }
 
         }
+        
+         jFileChooser2.setCurrentDirectory(new java.io.File("Videos"));
+       jFileChooser2.setFileSelectionMode(JFileChooser.FILES_AND_DIRECTORIES);
+       jFileChooser2.setAcceptAllFileFilterUsed(false);
+        jFileChooser2.setMultiSelectionEnabled(true);
 
 //         FileReader fr;
 //          try {
@@ -142,6 +147,8 @@ public class VideoRecording extends javax.swing.JFrame {
         jButton4 = new javax.swing.JButton();
         jButton5 = new javax.swing.JButton();
         jButton6 = new javax.swing.JButton();
+        jPanel3 = new javax.swing.JPanel();
+        jFileChooser2 = new javax.swing.JFileChooser();
         jLabel2 = new javax.swing.JLabel();
         jLabel3 = new javax.swing.JLabel();
         jLabel4 = new javax.swing.JLabel();
@@ -159,7 +166,7 @@ public class VideoRecording extends javax.swing.JFrame {
             }
         });
         jPanel1.add(jButton1);
-        jButton1.setBounds(230, 420, 330, 40);
+        jButton1.setBounds(320, 510, 330, 40);
 
         jButton2.setForeground(new java.awt.Color(255, 0, 0));
         jButton2.setText("Exit");
@@ -170,7 +177,7 @@ public class VideoRecording extends javax.swing.JFrame {
             }
         });
         jPanel1.add(jButton2);
-        jButton2.setBounds(300, 470, 190, 30);
+        jButton2.setBounds(390, 560, 190, 30);
 
         jButton3.setText("Watch last Record");
         jButton3.setBorder(javax.swing.BorderFactory.createLineBorder(new java.awt.Color(0, 153, 153), 2));
@@ -180,7 +187,7 @@ public class VideoRecording extends javax.swing.JFrame {
             }
         });
         jPanel1.add(jButton3);
-        jButton3.setBounds(230, 380, 150, 21);
+        jButton3.setBounds(320, 480, 150, 21);
 
         jButton4.setText("Save last Record");
         jButton4.setBorder(javax.swing.BorderFactory.createLineBorder(new java.awt.Color(0, 153, 153), 2));
@@ -190,7 +197,7 @@ public class VideoRecording extends javax.swing.JFrame {
             }
         });
         jPanel1.add(jButton4);
-        jButton4.setBounds(390, 380, 170, 21);
+        jButton4.setBounds(480, 480, 170, 21);
 
         jButton5.setText("Existing User");
         jButton5.setBorder(javax.swing.BorderFactory.createLineBorder(new java.awt.Color(0, 153, 153), 2));
@@ -200,7 +207,7 @@ public class VideoRecording extends javax.swing.JFrame {
             }
         });
         jPanel1.add(jButton5);
-        jButton5.setBounds(510, 120, 250, 30);
+        jButton5.setBounds(700, 100, 250, 30);
 
         jButton6.setText("New User");
         jButton6.setBorder(javax.swing.BorderFactory.createLineBorder(new java.awt.Color(0, 153, 153), 2));
@@ -210,38 +217,60 @@ public class VideoRecording extends javax.swing.JFrame {
             }
         });
         jPanel1.add(jButton6);
-        jButton6.setBounds(510, 160, 250, 30);
+        jButton6.setBounds(700, 150, 250, 30);
+
+        jFileChooser2.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                jFileChooser2ActionPerformed(evt);
+            }
+        });
+
+        javax.swing.GroupLayout jPanel3Layout = new javax.swing.GroupLayout(jPanel3);
+        jPanel3.setLayout(jPanel3Layout);
+        jPanel3Layout.setHorizontalGroup(
+            jPanel3Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+            .addComponent(jFileChooser2, javax.swing.GroupLayout.DEFAULT_SIZE, 730, Short.MAX_VALUE)
+        );
+        jPanel3Layout.setVerticalGroup(
+            jPanel3Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+            .addGroup(jPanel3Layout.createSequentialGroup()
+                .addComponent(jFileChooser2, javax.swing.GroupLayout.PREFERRED_SIZE, 251, javax.swing.GroupLayout.PREFERRED_SIZE)
+                .addGap(0, 0, Short.MAX_VALUE))
+        );
+
+        jPanel1.add(jPanel3);
+        jPanel3.setBounds(120, 210, 730, 250);
 
         jLabel2.setFont(new java.awt.Font("Tahoma", 0, 36)); // NOI18N
         jLabel2.setForeground(new java.awt.Color(0, 153, 153));
         jLabel2.setText("User  :");
         jPanel1.add(jLabel2);
-        jLabel2.setBounds(50, 130, 130, 44);
+        jLabel2.setBounds(80, 110, 130, 44);
 
         jLabel3.setFont(new java.awt.Font("Tahoma", 2, 48)); // NOI18N
         jLabel3.setForeground(new java.awt.Color(0, 153, 153));
         jLabel3.setText("Moments");
         jPanel1.add(jLabel3);
-        jLabel3.setBounds(290, 10, 350, 40);
+        jLabel3.setBounds(370, 10, 350, 40);
 
         jLabel4.setFont(new java.awt.Font("Tahoma", 0, 36)); // NOI18N
         jLabel4.setForeground(new java.awt.Color(0, 153, 153));
         jPanel1.add(jLabel4);
-        jLabel4.setBounds(160, 130, 350, 40);
+        jLabel4.setBounds(190, 110, 350, 40);
 
-        jLabel1.setIcon(new javax.swing.ImageIcon(getClass().getResource("/capturethemoment/free-download-vintage-camera-wallpaper-for-desktop-mobiles-800x600.jpg"))); // NOI18N
+        jLabel1.setIcon(new javax.swing.ImageIcon(getClass().getResource("/capturethemoment/WhatsApp Image 2019-01-15 at 6.13.33 PM.jpeg"))); // NOI18N
         jPanel1.add(jLabel1);
-        jLabel1.setBounds(0, -10, 1420, 580);
+        jLabel1.setBounds(0, 0, 960, 600);
 
         javax.swing.GroupLayout layout = new javax.swing.GroupLayout(getContentPane());
         getContentPane().setLayout(layout);
         layout.setHorizontalGroup(
             layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-            .addComponent(jPanel1, javax.swing.GroupLayout.DEFAULT_SIZE, 800, Short.MAX_VALUE)
+            .addComponent(jPanel1, javax.swing.GroupLayout.PREFERRED_SIZE, 959, javax.swing.GroupLayout.PREFERRED_SIZE)
         );
         layout.setVerticalGroup(
             layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-            .addComponent(jPanel1, javax.swing.GroupLayout.DEFAULT_SIZE, 550, Short.MAX_VALUE)
+            .addComponent(jPanel1, javax.swing.GroupLayout.PREFERRED_SIZE, 603, javax.swing.GroupLayout.PREFERRED_SIZE)
         );
 
         pack();
@@ -317,7 +346,11 @@ public class VideoRecording extends javax.swing.JFrame {
             public void run() {
                 videoCapture.stop();
                 webCameraView.hide();
-                Algorithms.doLaunch(args);
+                 try {
+            Desktop.getDesktop().open(new File("output.mp4"));
+        } catch (IOException ex) {
+            Logger.getLogger(VideoRecording.class.getName()).log(Level.SEVERE, null, ex);
+        }
                 new java.util.Timer().schedule(
                         new java.util.TimerTask() {
                     @Override
@@ -447,7 +480,7 @@ public class VideoRecording extends javax.swing.JFrame {
         },
                 5000
         );
-
+        
 
     }//GEN-LAST:event_jButton1ActionPerformed
 
@@ -459,7 +492,11 @@ public class VideoRecording extends javax.swing.JFrame {
         String a[] = args;
         a = null;
 
-        Algorithms.doLaunch(a);
+        try {
+            Desktop.getDesktop().open(new File("output.mp4"));
+        } catch (IOException ex) {
+            Logger.getLogger(VideoRecording.class.getName()).log(Level.SEVERE, null, ex);
+        }
 
 
     }//GEN-LAST:event_jButton3ActionPerformed
@@ -694,6 +731,17 @@ public class VideoRecording extends javax.swing.JFrame {
 
     }//GEN-LAST:event_jButton6ActionPerformed
 
+    private void jFileChooser2ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jFileChooser2ActionPerformed
+     
+  System.out.println("getSelectedFile() : " + jFileChooser2.getSelectedFile());
+        try {
+            Desktop.getDesktop().open(new File(jFileChooser2.getSelectedFile().getAbsolutePath()));
+        } catch (IOException ex) {
+            Logger.getLogger(VideoRecording.class.getName()).log(Level.SEVERE, null, ex);
+        }
+
+    }//GEN-LAST:event_jFileChooser2ActionPerformed
+
     /**
      * @param args the command line arguments
      */
@@ -868,10 +916,12 @@ public class VideoRecording extends javax.swing.JFrame {
     private javax.swing.JButton jButton4;
     private javax.swing.JButton jButton5;
     private javax.swing.JButton jButton6;
+    private javax.swing.JFileChooser jFileChooser2;
     private javax.swing.JLabel jLabel1;
     private javax.swing.JLabel jLabel2;
     private javax.swing.JLabel jLabel3;
     private javax.swing.JLabel jLabel4;
     private javax.swing.JPanel jPanel1;
+    private javax.swing.JPanel jPanel3;
     // End of variables declaration//GEN-END:variables
 }
