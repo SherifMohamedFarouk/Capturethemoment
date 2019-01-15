@@ -59,11 +59,11 @@ while ((bufferSize = fileInputStream.read(bufffer)) > 0) {
 fileInputStream.close();
 fileOutputStream.close();
 } catch (IOException  ex) {
-        Logger.getLogger(Algorithms.class.getName()).log(Level.SEVERE, null, ex);
+      
     }
    
     } catch (FileNotFoundException ex) {
-        Logger.getLogger(Algorithms.class.getName()).log(Level.SEVERE, null, ex);
+        
     }
     
 }

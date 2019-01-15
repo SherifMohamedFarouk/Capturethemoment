@@ -219,6 +219,9 @@ public class VideoRecording extends javax.swing.JFrame {
         jPanel1.add(jButton6);
         jButton6.setBounds(700, 150, 250, 30);
 
+        jPanel3.setBorder(javax.swing.BorderFactory.createLineBorder(new java.awt.Color(0, 153, 153), 4));
+
+        jFileChooser2.setBackground(new java.awt.Color(0, 102, 102));
         jFileChooser2.addActionListener(new java.awt.event.ActionListener() {
             public void actionPerformed(java.awt.event.ActionEvent evt) {
                 jFileChooser2ActionPerformed(evt);
@@ -229,17 +232,17 @@ public class VideoRecording extends javax.swing.JFrame {
         jPanel3.setLayout(jPanel3Layout);
         jPanel3Layout.setHorizontalGroup(
             jPanel3Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-            .addComponent(jFileChooser2, javax.swing.GroupLayout.DEFAULT_SIZE, 730, Short.MAX_VALUE)
+            .addComponent(jFileChooser2, javax.swing.GroupLayout.Alignment.TRAILING, javax.swing.GroupLayout.PREFERRED_SIZE, 730, javax.swing.GroupLayout.PREFERRED_SIZE)
         );
         jPanel3Layout.setVerticalGroup(
             jPanel3Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
             .addGroup(jPanel3Layout.createSequentialGroup()
-                .addComponent(jFileChooser2, javax.swing.GroupLayout.PREFERRED_SIZE, 251, javax.swing.GroupLayout.PREFERRED_SIZE)
+                .addComponent(jFileChooser2, javax.swing.GroupLayout.PREFERRED_SIZE, 253, javax.swing.GroupLayout.PREFERRED_SIZE)
                 .addGap(0, 0, Short.MAX_VALUE))
         );
 
         jPanel1.add(jPanel3);
-        jPanel3.setBounds(120, 210, 730, 250);
+        jPanel3.setBounds(120, 190, 730, 260);
 
         jLabel2.setFont(new java.awt.Font("Tahoma", 0, 36)); // NOI18N
         jLabel2.setForeground(new java.awt.Color(0, 153, 153));
@@ -732,14 +735,13 @@ public class VideoRecording extends javax.swing.JFrame {
     }//GEN-LAST:event_jButton6ActionPerformed
 
     private void jFileChooser2ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jFileChooser2ActionPerformed
-     
-  System.out.println("getSelectedFile() : " + jFileChooser2.getSelectedFile());
+
+        System.out.println("getSelectedFile() : " + jFileChooser2.getSelectedFile());
         try {
             Desktop.getDesktop().open(new File(jFileChooser2.getSelectedFile().getAbsolutePath()));
         } catch (IOException ex) {
             Logger.getLogger(VideoRecording.class.getName()).log(Level.SEVERE, null, ex);
         }
-
     }//GEN-LAST:event_jFileChooser2ActionPerformed
 
     /**
