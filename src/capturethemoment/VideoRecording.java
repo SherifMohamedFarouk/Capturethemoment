@@ -821,7 +821,11 @@ public class VideoRecording extends javax.swing.JFrame {
     private static class WebCameraView {
 
         private static final Dimension VIEW_DIMENSIONS = new Dimension(700, 700);
-        private static final Point VIEW_LOCATION = new Point(550, 120);
+//          Dimension dimension = Toolkit.getDefaultToolkit().getScreenSize();
+//    int x = (int) ((dimension.getWidth() - frame.getWidth()) / 2);
+//    int y = (int) ((dimension.getHeight() - frame.getHeight()) / 2);
+//      private final Point VIEW_LOCATION = new Point(x, y);
+    
         private static final int UPDATE_INTERVAL = 100;
 
         private JWindow webCameraView;
@@ -851,9 +855,11 @@ public class VideoRecording extends javax.swing.JFrame {
 
         public void show() {
 
-            webCameraView.setLocation(VIEW_LOCATION);
+  webCameraView.setLocationRelativeTo(null);
+
             webCameraView.setSize(VIEW_DIMENSIONS);
-            webCameraView.setAlwaysOnTop(true);
+ webCameraView.setLocationRelativeTo(null);
+
             webCameraView.setVisible(true);
             updateTimer.start();
         }
